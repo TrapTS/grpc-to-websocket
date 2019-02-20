@@ -1,7 +1,8 @@
-import { loadPackageDefinition, Server, ServerCredentials, status } from 'grpc'
+import { loadPackageDefinition, Server, ServerCredentials } from 'grpc'
 import { PackageDefinition, loadSync, Options } from '@grpc/proto-loader'
 import { resolve } from 'path'
 import * as pino from 'pino'
+import { getNoteById } from './service/note'
 
 const logger = pino({
   name: 'grpc-server',
@@ -23,34 +24,12 @@ let proto: PackageDefinition = loadPackageDefinition(
 )
 const PORT = 7000
 
-interface Note {
-  id: string
-  title: string
-  content: string
-}
-
-const notes: Note[] = [
-  { id: '1', title: 'Note 1', content: 'Content 1' },
-  { id: '2', title: 'Note 2', content: 'Content 2' }
-]
-
 const bootstrap = () => {
-  logger.info(`[grpc]: Starting gRPC server on port ${PORT}...`)
+  logger.info(`[gRPC]: Starting gRPC server on port ${PORT}...`)
   const server = new Server()
-  server.addService(proto.NoteService['service'], {
-    get: (call, callback) => {
-      let note = notes.find(n => n.id == call.request.id)
-      if (note) {
-        callback(null, note)
-      } else {
-        callback({
-          code: status.NOT_FOUND,
-          details: 'Not found'
-        })
-      }
-    }
-  })
+  server.addService(proto.NoteService['service'], { get: getNoteById })
   server.bind(`0.0.0.0:${PORT}`, ServerCredentials.createInsecure())
+  console.log(`[gRPC]: Starting gRPC server on port ${PORT}`)
   server.start()
 }
 
