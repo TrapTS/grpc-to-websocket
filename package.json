@@ -1,0 +1,32 @@
+{
+  "name": "grpc-to-websocket",
+  "version": "1.0.0",
+  "description": "grpc to websocket.",
+  "scripts": {
+    "format": "prettier --write \"**/*.ts\"",
+    "tslint-check": "tslint-config-prettier-check ./tslint.json",
+    "build": "tsc -p tsconfig.json"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
+  "repository": "https://github.com/TrapTS/grpc-to-websocket",
+  "author": "AlfieriChou <alfierichou@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "husky": "^1.3.1",
+    "prettier": "^1.16.4",
+    "pretty-quick": "^1.10.0",
+    "reflect-metadata": "^0.1.13",
+    "tslint": "^5.12.1",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.0.1",
+    "typescript": "^3.3.3"
+  },
+  "dependencies": {
+    "@grpc/proto-loader": "^0.4.0",
+    "grpc": "^1.18.0"
+  }
+}
