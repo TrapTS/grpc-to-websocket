@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "grpc to websocket.",
   "scripts": {
-    "server": "ts-node ./src/grpc/server.ts",
+    "server": "ts-node ./src/app.ts",
     "client": "ts-node ./src/demo.ts",
     "format": "prettier --write \"**/*.ts\"",
     "tslint-check": "tslint-config-prettier-check ./tslint.json",
