@@ -14,7 +14,7 @@ let proto = loadPackageDefinition(
   loadSync(resolve(__dirname, 'proto/notes.proto'), options)
 )
 
-const PORT = 7000
+const PORT: number = 7000
 const NoteService = proto.NoteService
 export const client = new NoteService(
   `0.0.0.0:${PORT}`,

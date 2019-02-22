@@ -10,10 +10,6 @@ message Note {
   string content = 3;
 }
 
-message NoteList {
-  repeated Note notes = 1;
-}
-
 message NoteRequestId {
   string id = 1;
 }

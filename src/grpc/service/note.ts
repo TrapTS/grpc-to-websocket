@@ -1,10 +1,7 @@
 import { status } from 'grpc'
-import * as io from 'socket.io-client'
+import * as socketio from 'socket.io'
 
-const socket = io('ws://localhost:3000/test')
-socket.on('connect', () => {
-  console.log('[WebSocket]: Socket connected!!!')
-})
+const io = socketio(3000)
 
 interface Note {
   id: string
@@ -20,8 +17,12 @@ const notes: Note[] = [
 export const getNoteById = (call, callback) => {
   let note = notes.find(n => n.id === call.request.id)
   if (note) {
-    socket.emit('ddd', {
-      message: note
+    io.of('/notes').on('connect', socket => {
+      console.log('[WebSocket]: User connected!!   ' + 'id: ' + socket.id)
+      socket.emit('note', { note: note })
+      socket.on('disconnect', () => {
+        console.log('[WebSocket]: id: ' + socket.id + '   disconnected!!')
+      })
     })
     callback(null, note)
   } else {

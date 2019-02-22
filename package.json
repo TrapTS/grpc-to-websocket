@@ -5,6 +5,7 @@
   "scripts": {
     "server": "ts-node ./src/app.ts",
     "client": "ts-node ./src/demo.ts",
+    "ws": "ts-node ./src/wsDemo.ts",
     "format": "prettier --write \"**/*.ts\"",
     "tslint-check": "tslint-config-prettier-check ./tslint.json",
     "build": "tsc -p tsconfig.json"
