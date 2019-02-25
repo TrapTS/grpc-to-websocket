@@ -13,7 +13,7 @@ const notes: Note[] = [
 ]
 
 export const getNoteById = (call, callback) => {
-  let note = notes.find(n => n.id === call.request.id)
+  let note: Note | undefined = notes.find(n => n.id === call.request.id)
   if (note) {
     noteSocket.emit('note', { note: note })
     callback(null, note)

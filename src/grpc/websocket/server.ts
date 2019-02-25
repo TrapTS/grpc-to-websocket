@@ -1,7 +1,7 @@
 import * as socketio from 'socket.io'
 
-const io = socketio(3000)
-let noteSocket
+const io: socketio.Server = socketio(3000)
+let noteSocket: socketio.Socket
 io.of('/notes').on('connect', socket => {
   console.log('[WebSocket]: User connected!!   ' + 'id: ' + socket.id)
   noteSocket = socket
