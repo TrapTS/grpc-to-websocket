@@ -1,5 +1,5 @@
 import { status } from 'grpc'
-import { noteSocket } from '../websocket/server'
+import { noteSocket } from '../../websocket/server'
 
 interface Note {
   id: string
