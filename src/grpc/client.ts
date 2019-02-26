@@ -1,6 +1,7 @@
 import { loadPackageDefinition, credentials } from 'grpc'
 import { resolve } from 'path'
 import { loadSync, Options } from '@grpc/proto-loader'
+import { config } from '../config'
 
 const options: Options = {
   keepCase: true,
@@ -14,12 +15,11 @@ let proto = loadPackageDefinition(
   loadSync(resolve(__dirname, 'proto/notes.proto'), options)
 )
 
-const PORT: number = 7000
 const NoteService = proto.NoteService
 export const client = new NoteService(
-  `0.0.0.0:${PORT}`,
+  `0.0.0.0:${config.gRPC_PORT}`,
   credentials.createInsecure(),
   () => {
-    console.log(`[gRPC]: Starting gRPC client on port ${PORT}...`)
+    console.log(`[gRPC]: Starting gRPC client on port ${config.gRPC_PORT}...`)
   }
 )
