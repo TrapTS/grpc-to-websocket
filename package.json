@@ -4,7 +4,7 @@
   "description": "grpc to websocket.",
   "scripts": {
     "server": "ts-node ./src/app.ts",
-    "client": "ts-node ./src/demo.ts",
+    "client": "ts-node ./src/client.ts",
     "ws": "ts-node ./src/wsDemo.ts",
     "format": "prettier --write \"**/*.ts\"",
     "tslint-check": "tslint-config-prettier-check ./tslint.json",
