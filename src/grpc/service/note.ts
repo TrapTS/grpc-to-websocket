@@ -1,5 +1,7 @@
-import { status } from 'grpc'
 import { noteSocket } from '../../websocket/server'
+import { NoteServiceService, INoteServiceServer } from '../model/notes_grpc_pb'
+import { NoteRequest, NoteResponse } from '../model/notes_pb'
+import { ServerUnaryCall, sendUnaryData } from 'grpc'
 
 interface Note {
   id: string
@@ -12,15 +14,21 @@ const notes: Note[] = [
   { id: '2', title: 'Note 2', content: 'Content 2' }
 ]
 
-export const getNoteById = (call, callback) => {
-  let note: Note | undefined = notes.find(n => n.id === call.request.id)
-  if (note) {
-    noteSocket.emit('note', { note: note })
-    callback(null, note)
-  } else {
-    callback({
-      code: status.NOT_FOUND,
-      details: 'Not found'
-    })
+class NoteService implements INoteServiceServer {
+  show(
+    call: ServerUnaryCall<NoteRequest>,
+    callback: sendUnaryData<NoteResponse>
+  ): void {
+    let note: Note | undefined = notes.find(n => n.id === call.request.getId())
+    if (note) {
+      noteSocket.emit('note', { note: note })
+      const res = new NoteResponse()
+      res.setId(note.id)
+      res.setContent(note.content)
+      res.setTitle(note.title)
+      callback(null, res)
+    }
   }
 }
+
+export { NoteService, NoteServiceService }

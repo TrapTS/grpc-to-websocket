@@ -1,43 +1,47 @@
-import { loadPackageDefinition, credentials } from 'grpc'
-import { resolve } from 'path'
-import { loadSync, Options } from '@grpc/proto-loader'
+import { NoteRequest, NoteResponse } from './grpc/model/notes_pb'
+import { NoteServiceClient } from './grpc/model/notes_grpc_pb'
 import { config } from './config'
-import { promisify } from 'util'
-import * as pino from 'pino'
+import { credentials, Metadata, ServiceError } from 'grpc'
 
-const options: Options = {
-  keepCase: true,
-  longs: String,
-  enums: String,
-  defaults: true,
-  oneofs: true
+const client: NoteServiceClient = new NoteServiceClient(
+  `0.0.0.0:${config.gRPC_PORT}`,
+  credentials.createInsecure()
+)
+
+interface INote {
+  id: string
+  title: string
+  content: string
 }
 
-let proto = loadPackageDefinition(
-  loadSync(resolve(__dirname, './grpc/proto/notes.proto'), options)
-)
-
-const NoteService = proto.NoteService
-const client = new NoteService(
-  `0.0.0.0:${config.gRPC_PORT}`,
-  credentials.createInsecure(),
-  () => {
-    console.log(`[gRPC]: Starting gRPC client on port ${config.gRPC_PORT}...`)
-  }
-)
-
-const logger = pino({
-  name: 'grpc-server',
-  messageKey: 'message',
-  changeLevelName: 'severity',
-  useLevelLabels: true
-})
-
-const getAsync = promisify(client.get).bind(client)
+const show = async (
+  params: NoteRequest,
+  metadata: Metadata = new Metadata()
+): Promise<INote> => {
+  return new Promise<INote>(
+    (resolve: Function, reject: Function): void => {
+      client.show(
+        params,
+        metadata,
+        (err: ServiceError | null, res: NoteResponse) => {
+          if (err) {
+            return reject(err)
+          }
+          resolve(res.toObject())
+        }
+      )
+    }
+  )
+}
 
 const bootstrap = async () => {
-  const result = await getAsync({ id: '1' })
-  logger.info('[gRPC]: info' + JSON.stringify(result))
+  const params: NoteRequest = new NoteRequest()
+  params.setId('1')
+
+  const metadata: Metadata = new Metadata()
+
+  const result = await show(params, metadata)
+  console.log('[gRPC]: ', result)
 }
 
 bootstrap()
