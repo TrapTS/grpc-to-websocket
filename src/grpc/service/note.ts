@@ -1,7 +1,7 @@
-import { noteSocket } from '../../websocket/server'
 import { NoteServiceService, INoteServiceServer } from '../model/notes_grpc_pb'
 import { NoteRequest, NoteResponse } from '../model/notes_pb'
 import { ServerUnaryCall, sendUnaryData } from 'grpc'
+import { noteQueue } from '../../queue/queue'
 
 interface Note {
   id: string
@@ -21,7 +21,7 @@ class NoteService implements INoteServiceServer {
   ): void {
     let note: Note | undefined = notes.find(n => n.id === call.request.getId())
     if (note) {
-      noteSocket.emit('note', { note: note })
+      noteQueue.push(note)
       const res = new NoteResponse()
       res.setId(note.id)
       res.setContent(note.content)
